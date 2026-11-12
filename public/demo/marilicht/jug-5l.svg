@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
+  
+  <defs>
+    <linearGradient id="j5-plastic" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#7FCFE6" stop-opacity="0.95"/>
+      <stop offset="0.18" stop-color="#CFEFF8" stop-opacity="0.75"/>
+      <stop offset="0.5" stop-color="#F3FCFF" stop-opacity="0.45"/>
+      <stop offset="0.82" stop-color="#BFE8F4" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#5FBFDC" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="j5-water" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#8EDDF0" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#2FA9D3" stop-opacity="0.75"/>
+    </linearGradient>
+    <linearGradient id="j5-shine" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.25" stop-color="#fff" stop-opacity="0.9"/>
+      <stop offset="0.8" stop-color="#fff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="j5-cap" x1="0" x2="1">
+      <stop offset="0" stop-color="#061528"/>
+      <stop offset="0.45" stop-color="#1B4E80"/>
+      <stop offset="1" stop-color="#061528"/>
+    </linearGradient>
+    <linearGradient id="j5-label" x1="0" x2="1">
+      <stop offset="0" stop-color="#DCEFF6"/>
+      <stop offset="0.35" stop-color="#FFFFFF"/>
+      <stop offset="0.7" stop-color="#F4FAFC"/>
+      <stop offset="1" stop-color="#C9E4EE"/>
+    </linearGradient>
+    <radialGradient id="j5-shadow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#061528" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#061528" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <clipPath id="j5-clip"><path d="M 170 120 L 230 120 L 232 150 C 232 170 300 172 300 205 L 300 520 Q 300 548 272 548 L 128 548 Q 100 548 100 520 L 100 205 C 100 172 168 170 168 150 Z"/></clipPath>
+  <ellipse cx="200" cy="554" rx="140" ry="14" fill="url(#j5-shadow)"/>
+  <path d="M 236 160 C 290 150 312 168 312 196 L 300 205 C 296 186 280 176 240 182 Z" fill="#BFE6F2" stroke="#0A2342" stroke-opacity="0.2"/>
+  <path d="M 170 120 L 230 120 L 232 150 C 232 170 300 172 300 205 L 300 520 Q 300 548 272 548 L 128 548 Q 100 548 100 520 L 100 205 C 100 172 168 170 168 150 Z" fill="url(#j5-plastic)"/>
+  <g clip-path="url(#j5-clip)">
+    <path d="M 0 232 C 90 222 150 242 220 232 S 340 224 400 232 L 400 600 L 0 600 Z" fill="url(#j5-water)"/>
+    <path d="M 0 232 C 90 222 150 242 220 232 S 340 224 400 232" fill="none" stroke="#fff" stroke-opacity="0.8" stroke-width="2"/>
+    <rect x="96" y="300" width="208" height="150" fill="url(#j5-label)"/>
+    <rect x="96" y="300" width="208" height="3" fill="#3CC3E3"/>
+    <rect x="96" y="447" width="208" height="3" fill="#3CC3E3"/>
+    <g transform="translate(200 344) scale(1.5)">
+    <path d="M0 -18 C 7 -8 12 -1 12 6 A 12 12 0 0 1 -12 6 C -12 -1 -7 -8 0 -18 Z" fill="#0A2342"/>
+    <path d="M-10 6 C -5 2 -1 9 4 5 C 7 3 9 4 11 5 A 11.5 11.5 0 0 1 -10 6 Z" fill="#3CC3E3"/>
+  </g>
+    <text x="200" y="400" text-anchor="middle" font-family="Georgia, serif" font-size="25.2" fill="#0A2342" letter-spacing="1.5">MARILICHT</text>
+    <text x="200" y="422" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#0A2342" fill-opacity="0.7" letter-spacing="2.4">SPRING WATER · 5L</text>
+    <rect x="124" y="140" width="14" height="400" fill="url(#j5-shine)" opacity="0.8"/>
+    <rect x="262" y="210" width="7" height="300" fill="url(#j5-shine)" opacity="0.5"/>
+    <rect x="100" y="250" width="200" height="2" fill="#fff" opacity="0.35"/><rect x="100" y="270" width="200" height="2" fill="#fff" opacity="0.35"/><rect x="100" y="470" width="200" height="2" fill="#fff" opacity="0.35"/><rect x="100" y="490" width="200" height="2" fill="#fff" opacity="0.35"/>
+  </g>
+  <path d="M 170 120 L 230 120 L 232 150 C 232 170 300 172 300 205 L 300 520 Q 300 548 272 548 L 128 548 Q 100 548 100 520 L 100 205 C 100 172 168 170 168 150 Z" fill="none" stroke="#0A2342" stroke-opacity="0.22" stroke-width="1.5"/>
+  <rect x="160" y="88" width="80" height="36" rx="8" fill="url(#j5-cap)"/>
+</svg>

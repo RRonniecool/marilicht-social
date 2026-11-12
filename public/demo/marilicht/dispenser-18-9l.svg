@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
+  
+  <defs>
+    <linearGradient id="d19-plastic" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#7FCFE6" stop-opacity="0.95"/>
+      <stop offset="0.18" stop-color="#CFEFF8" stop-opacity="0.75"/>
+      <stop offset="0.5" stop-color="#F3FCFF" stop-opacity="0.45"/>
+      <stop offset="0.82" stop-color="#BFE8F4" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#5FBFDC" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="d19-water" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#8EDDF0" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#2FA9D3" stop-opacity="0.75"/>
+    </linearGradient>
+    <linearGradient id="d19-shine" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.25" stop-color="#fff" stop-opacity="0.9"/>
+      <stop offset="0.8" stop-color="#fff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="d19-cap" x1="0" x2="1">
+      <stop offset="0" stop-color="#061528"/>
+      <stop offset="0.45" stop-color="#1B4E80"/>
+      <stop offset="1" stop-color="#061528"/>
+    </linearGradient>
+    <linearGradient id="d19-label" x1="0" x2="1">
+      <stop offset="0" stop-color="#DCEFF6"/>
+      <stop offset="0.35" stop-color="#FFFFFF"/>
+      <stop offset="0.7" stop-color="#F4FAFC"/>
+      <stop offset="1" stop-color="#C9E4EE"/>
+    </linearGradient>
+    <radialGradient id="d19-shadow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#061528" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#061528" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <clipPath id="d19-clip"><path d="M 178 96 L 222 96 L 222 128 C 222 150 318 150 318 196 L 318 516 Q 318 548 286 548 L 114 548 Q 82 548 82 516 L 82 196 C 82 150 178 150 178 128 Z"/></clipPath>
+  <ellipse cx="200" cy="554" rx="158" ry="15" fill="url(#d19-shadow)"/>
+  <path d="M 178 96 L 222 96 L 222 128 C 222 150 318 150 318 196 L 318 516 Q 318 548 286 548 L 114 548 Q 82 548 82 516 L 82 196 C 82 150 178 150 178 128 Z" fill="url(#d19-plastic)"/>
+  <g clip-path="url(#d19-clip)">
+    <path d="M 0 176 C 90 166 150 186 220 176 S 340 168 400 176 L 400 600 L 0 600 Z" fill="url(#d19-water)"/>
+    <path d="M 0 176 C 90 166 150 186 220 176 S 340 168 400 176" fill="none" stroke="#fff" stroke-opacity="0.8" stroke-width="2"/>
+    <path d="M 82 228 Q 200 238 318 228" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="5"/><path d="M 82 234 Q 200 244 318 234" fill="none" stroke="#0A2342" stroke-opacity="0.08" stroke-width="3"/><path d="M 82 264 Q 200 274 318 264" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="5"/><path d="M 82 270 Q 200 280 318 270" fill="none" stroke="#0A2342" stroke-opacity="0.08" stroke-width="3"/><path d="M 82 476 Q 200 486 318 476" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="5"/><path d="M 82 482 Q 200 492 318 482" fill="none" stroke="#0A2342" stroke-opacity="0.08" stroke-width="3"/><path d="M 82 512 Q 200 522 318 512" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="5"/><path d="M 82 518 Q 200 528 318 518" fill="none" stroke="#0A2342" stroke-opacity="0.08" stroke-width="3"/>
+    <rect x="78" y="300" width="244" height="150" fill="url(#d19-label)"/>
+    <rect x="78" y="300" width="244" height="3" fill="#3CC3E3"/>
+    <rect x="78" y="447" width="244" height="3" fill="#3CC3E3"/>
+    <g transform="translate(200 344) scale(1.5)">
+    <path d="M0 -18 C 7 -8 12 -1 12 6 A 12 12 0 0 1 -12 6 C -12 -1 -7 -8 0 -18 Z" fill="#0A2342"/>
+    <path d="M-10 6 C -5 2 -1 9 4 5 C 7 3 9 4 11 5 A 11.5 11.5 0 0 1 -10 6 Z" fill="#3CC3E3"/>
+  </g>
+    <text x="200" y="400" text-anchor="middle" font-family="Georgia, serif" font-size="30" fill="#0A2342" letter-spacing="1.5">MARILICHT</text>
+    <text x="200" y="422" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#0A2342" fill-opacity="0.7" letter-spacing="2.4">DISPENSER REFILL · 18.9L</text>
+    <rect x="108" y="150" width="16" height="390" fill="url(#d19-shine)" opacity="0.8"/>
+    <rect x="280" y="200" width="8" height="300" fill="url(#d19-shine)" opacity="0.5"/>
+  </g>
+  <path d="M 178 96 L 222 96 L 222 128 C 222 150 318 150 318 196 L 318 516 Q 318 548 286 548 L 114 548 Q 82 548 82 516 L 82 196 C 82 150 178 150 178 128 Z" fill="none" stroke="#0A2342" stroke-opacity="0.22" stroke-width="1.5"/>
+  <rect x="168" y="62" width="64" height="38" rx="9" fill="url(#d19-cap)"/>
+  <rect x="176" y="70" width="48" height="6" rx="3" fill="#fff" fill-opacity="0.18"/>
+</svg>

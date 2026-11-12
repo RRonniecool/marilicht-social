@@ -1,0 +1,172 @@
+import type { PageContent } from "@/lib/types";
+
+/**
+ * Demo content used the first time the site runs (local mode) and by
+ * scripts/seed-sanity.ts. Replace it from the dashboard.
+ */
+
+const img = (file: string, alt: string, width: number, height: number) => ({
+  url: `/demo/marilicht/${file}`,
+  alt,
+  width,
+  height,
+});
+
+export const seedContent: PageContent = {
+  profile: {
+    name: "Marilicht",
+    tagline: "Spring water, bottled at source",
+    description:
+      "Naturally filtered through 120 metres of granite, then bottled within hours at our spring. Our water is delivered to homes and offices across Lagos every day of the week.",
+    location: "Lekki, Lagos",
+    logo: img("logo.svg", "Marilicht logo", 256, 256),
+    cover: img("cover.svg", "Sunlight falling through clear water", 1600, 900),
+  },
+  website: {
+    url: "https://www.marilicht.com",
+    title: "Marilicht",
+    description: "Set up a weekly delivery, manage office subscriptions and track your orders.",
+    previewImage: img("website-preview.svg", "Marilicht website homepage", 1200, 750),
+    storeUrl: "https://shop.marilicht.com",
+    storeLabel: "Shop online",
+  },
+  socials: [
+    { id: "s_ig", platform: "instagram", url: "https://instagram.com/marilicht" },
+    { id: "s_tt", platform: "tiktok", url: "https://tiktok.com/@marilicht" },
+    { id: "s_fb", platform: "facebook", url: "https://facebook.com/marilicht" },
+    { id: "s_yt", platform: "youtube", url: "https://youtube.com/@marilicht" },
+    { id: "s_x", platform: "x", url: "https://x.com/marilicht" },
+    { id: "s_li", platform: "linkedin", url: "https://linkedin.com/company/marilicht" },
+  ],
+  products: [
+    {
+      id: "p_50cl",
+      name: "Still spring water",
+      description: "The everyday bottle. Light, crisp and naturally low in sodium.",
+      size: "50cl · pack of 12",
+      price: "₦3,600",
+      image: img("bottle-50cl.svg", "50cl bottle of Marilicht spring water", 400, 600),
+      orderUrl: "",
+      badge: "Best seller",
+    },
+    {
+      id: "p_75cl",
+      name: "Sport cap",
+      description: "A wider bottle with a no-spill cap for the gym and the school run.",
+      size: "75cl · pack of 12",
+      price: "₦4,800",
+      image: img("bottle-75cl-sport.svg", "75cl Marilicht sport cap bottle", 400, 600),
+      orderUrl: "",
+      badge: "",
+    },
+    {
+      id: "p_15l",
+      name: "Family bottle",
+      description: "For the dinner table and the fridge door.",
+      size: "1.5L · pack of 6",
+      price: "₦3,900",
+      image: img("bottle-1-5l.svg", "1.5 litre bottle of Marilicht spring water", 400, 600),
+      orderUrl: "",
+      badge: "",
+    },
+    {
+      id: "p_5l",
+      name: "Kitchen jug",
+      description: "Easy-grip handle for cooking, kettles and long weekends.",
+      size: "5L",
+      price: "₦1,500",
+      image: img("jug-5l.svg", "5 litre Marilicht water jug", 400, 600),
+      orderUrl: "",
+      badge: "",
+    },
+    {
+      id: "p_189",
+      name: "Dispenser refill",
+      description: "We collect your empty bottle and swap it for a sanitised, sealed refill.",
+      size: "18.9L",
+      price: "₦2,200",
+      image: img("dispenser-18-9l.svg", "18.9 litre Marilicht dispenser bottle", 400, 600),
+      orderUrl: "",
+      badge: "Free delivery",
+    },
+  ],
+  contact: {
+    whatsapp: "+234 801 234 5678",
+    whatsappMessage: "Hello Marilicht, I'd like to place an order.",
+    phone: "+234 801 234 5678",
+    email: "hello@marilicht.social",
+    address: "14 Admiralty Way, Lekki Phase 1, Lagos",
+    mapsUrl: "https://maps.google.com/?q=Admiralty+Way+Lekki+Lagos",
+    hours: [
+      { day: 0, open: "07:00", close: "19:00", closed: false },
+      { day: 1, open: "07:00", close: "19:00", closed: false },
+      { day: 2, open: "07:00", close: "19:00", closed: false },
+      { day: 3, open: "07:00", close: "19:00", closed: false },
+      { day: 4, open: "07:00", close: "19:00", closed: false },
+      { day: 5, open: "08:00", close: "16:00", closed: false },
+      { day: 6, open: "10:00", close: "14:00", closed: true },
+    ],
+    hoursNote: "Same-day delivery on orders placed before 2pm.",
+  },
+  promotions: [
+    {
+      id: "pr_announce",
+      kind: "announcement",
+      title: "Now delivering to Ajah and Sangotedo",
+      body: "",
+      image: null,
+      ctaLabel: "",
+      url: "",
+      active: true,
+    },
+    {
+      id: "pr_refill",
+      kind: "offer",
+      title: "Refill Fridays",
+      body: "Every Friday, dispenser refills are 20% off when you order three or more.",
+      image: img("promo-refill.svg", "Marilicht dispenser bottle on an aqua background", 1200, 600),
+      ctaLabel: "Claim on WhatsApp",
+      url: "",
+      active: true,
+    },
+    {
+      id: "pr_office",
+      kind: "banner",
+      title: "Water for your office",
+      body: "Monthly plans with a free dispenser for teams of ten or more.",
+      image: null,
+      ctaLabel: "See plans",
+      url: "https://www.marilicht.com/business",
+      active: true,
+    },
+  ],
+  links: [
+    {
+      id: "l_sub",
+      label: "Start a weekly delivery",
+      description: "Choose your bottles and a delivery day",
+      url: "https://www.marilicht.com/subscribe",
+    },
+    {
+      id: "l_report",
+      label: "Read our water quality report",
+      description: "Independent lab results, updated every quarter",
+      url: "https://www.marilicht.com/quality",
+    },
+    {
+      id: "l_events",
+      label: "Order for an event",
+      description: "Weddings, conferences and sports days",
+      url: "https://www.marilicht.com/events",
+    },
+  ],
+  appearance: {
+    primary: "#0A2342",
+    accent: "#3CC3E3",
+    background: "depth",
+    buttonShape: "pill",
+    buttonFill: "solid",
+    cardStyle: "glass",
+    font: "tide",
+  },
+};

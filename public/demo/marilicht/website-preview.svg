@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" width="1200" height="750">
+  <defs>
+    <linearGradient id="hero" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#E7F7FB"/>
+      <stop offset="1" stop-color="#BDE9F4"/>
+    </linearGradient>
+    <linearGradient id="btl" x1="0" x2="1"><stop offset="0" stop-color="#7FCFE6"/><stop offset="0.5" stop-color="#F3FCFF"/><stop offset="1" stop-color="#5FBFDC"/></linearGradient>
+  </defs>
+  <rect width="1200" height="750" fill="#fff"/>
+  <rect width="1200" height="520" fill="url(#hero)"/>
+  <g transform="translate(84 60) scale(1.25)">
+    <path d="M0 -18 C 7 -8 12 -1 12 6 A 12 12 0 0 1 -12 6 C -12 -1 -7 -8 0 -18 Z" fill="#0A2342"/>
+    <path d="M-10 6 C -5 2 -1 9 4 5 C 7 3 9 4 11 5 A 11.5 11.5 0 0 1 -10 6 Z" fill="#3CC3E3"/>
+  </g>
+  <text x="108" y="68" font-family="Georgia, serif" font-size="24" fill="#0A2342" letter-spacing="1">Marilicht</text>
+  <text x="620" y="66" font-family="Helvetica, Arial" font-size="16" fill="#0A2342" fill-opacity="0.75">Our water</text><text x="740" y="66" font-family="Helvetica, Arial" font-size="16" fill="#0A2342" fill-opacity="0.75">Delivery</text><text x="860" y="66" font-family="Helvetica, Arial" font-size="16" fill="#0A2342" fill-opacity="0.75">Business</text><text x="980" y="66" font-family="Helvetica, Arial" font-size="16" fill="#0A2342" fill-opacity="0.75">About</text>
+  <rect x="1090" y="42" width="80" height="38" rx="19" fill="#0A2342"/>
+  <text x="1130" y="66" text-anchor="middle" font-family="Helvetica, Arial" font-size="15" fill="#fff">Order</text>
+  <text x="84" y="230" font-family="Georgia, serif" font-size="78" fill="#0A2342">Pure water,</text>
+  <text x="84" y="316" font-family="Georgia, serif" font-size="78" fill="#0A2342">delivered.</text>
+  <text x="86" y="372" font-family="Helvetica, Arial" font-size="20" fill="#0A2342" fill-opacity="0.65">From our protected spring to your home and office.</text>
+  <rect x="84" y="410" width="190" height="56" rx="28" fill="#0A2342"/>
+  <text x="179" y="445" text-anchor="middle" font-family="Helvetica, Arial" font-size="18" fill="#fff">Start a delivery</text>
+  <rect x="290" y="410" width="160" height="56" rx="28" fill="none" stroke="#0A2342" stroke-opacity="0.4"/>
+  <text x="370" y="445" text-anchor="middle" font-family="Helvetica, Arial" font-size="18" fill="#0A2342">Our range</text>
+  <circle cx="900" cy="300" r="210" fill="#fff" fill-opacity="0.45"/>
+  <path d="M870 120 L 930 120 L 930 150 C 930 170 1010 175 1010 220 L 1010 470 Q 1010 500 980 500 L 820 500 Q 790 500 790 470 L 790 220 C 790 175 870 170 870 150 Z" fill="url(#btl)" stroke="#0A2342" stroke-opacity="0.2"/>
+  <rect x="790" y="320" width="220" height="110" fill="#fff" fill-opacity="0.9"/>
+  <g transform="translate(900 352) scale(1.2)">
+    <path d="M0 -18 C 7 -8 12 -1 12 6 A 12 12 0 0 1 -12 6 C -12 -1 -7 -8 0 -18 Z" fill="#0A2342"/>
+    <path d="M-10 6 C -5 2 -1 9 4 5 C 7 3 9 4 11 5 A 11.5 11.5 0 0 1 -10 6 Z" fill="#3CC3E3"/>
+  </g>
+  <text x="900" y="400" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#0A2342" letter-spacing="1.5">MARILICHT</text>
+  <rect x="860" y="92" width="80" height="32" rx="6" fill="#0A2342"/>
+  <rect x="84" y="570" width="250" height="150" rx="16" fill="#F4FAFC"/><rect x="108" y="600" width="120" height="14" rx="7" fill="#0A2342" fill-opacity="0.75"/><rect x="108" y="628" width="180" height="10" rx="5" fill="#0A2342" fill-opacity="0.2"/><rect x="108" y="648" width="150" height="10" rx="5" fill="#0A2342" fill-opacity="0.2"/><rect x="354" y="570" width="250" height="150" rx="16" fill="#F4FAFC"/><rect x="378" y="600" width="120" height="14" rx="7" fill="#0A2342" fill-opacity="0.75"/><rect x="378" y="628" width="180" height="10" rx="5" fill="#0A2342" fill-opacity="0.2"/><rect x="378" y="648" width="150" height="10" rx="5" fill="#0A2342" fill-opacity="0.2"/><rect x="624" y="570" width="250" height="150" rx="16" fill="#F4FAFC"/><rect x="648" y="600" width="120" height="14" rx="7" fill="#0A2342" fill-opacity="0.75"/><rect x="648" y="628" width="180" height="10" rx="5" fill="#0A2342" fill-opacity="0.2"/><rect x="648" y="648" width="150" height="10" rx="5" fill="#0A2342" fill-opacity="0.2"/><rect x="894" y="570" width="250" height="150" rx="16" fill="#F4FAFC"/><rect x="918" y="600" width="120" height="14" rx="7" fill="#0A2342" fill-opacity="0.75"/><rect x="918" y="628" width="180" height="10" rx="5" fill="#0A2342" fill-opacity="0.2"/><rect x="918" y="648" width="150" height="10" rx="5" fill="#0A2342" fill-opacity="0.2"/>
+</svg>
