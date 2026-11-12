@@ -10,6 +10,7 @@ import { deepen, readableOn } from "@/lib/color";
 import { imageSrc } from "@/lib/images";
 import type { ImageRef } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { BOTTLE_HEIGHT, BOTTLE_WIDTH, BottleQr, dropletMarkDataUrl } from "./bottle-qr";
 
 type Props = {
   url: string;
@@ -23,6 +24,9 @@ type Props = {
 };
 
 const EXPORT_SIZE = 1024;
+const BOTTLE_EXPORT_WIDTH = 1200;
+
+type Design = "bottle" | "card" | "plain";
 
 /** Loads the logo as a data URL so it can be embedded in downloads (PNG canvas + standalone SVG). */
 function useDataUrl(src: string | null) {
@@ -55,20 +59,32 @@ export function QrStudio({ url, label, name, logo, primary, accent, fileName, co
   const colors = Array.from(new Set([deep, "#111111", deepen(accent, 4.5)]));
   const [fg, setFg] = useState(deep);
   const [bg, setBg] = useState<"white" | "tint">("white");
-  const [withLogo, setWithLogo] = useState(Boolean(logo?.url));
+  const [withLogo, setWithLogo] = useState(true);
   const [logoSize, setLogoSize] = useState<"s" | "m">("s");
-  const [framed, setFramed] = useState(true);
+  const [design, setDesign] = useState<Design>("bottle");
+  const framed = design === "card";
   const canvasHost = useRef<HTMLDivElement>(null);
   const svgHost = useRef<HTMLDivElement>(null);
+  const bottleRef = useRef<SVGSVGElement>(null);
   const toast = useToast();
   const id = useId();
 
-  const logoData = useDataUrl(withLogo && logo?.url ? imageSrc(logo, 256) : null);
+  // The middle of the code: the uploaded logo, or a crisp droplet mark when there isn't one.
+  const uploadedLogo = useDataUrl(withLogo && logo?.url ? imageSrc(logo, 256) : null);
+  const droplet = dropletMarkDataUrl(deep, accent);
+  const logoData = withLogo ? (logo?.url ? uploadedLogo : droplet) : null;
   const background = bg === "white" ? "#FFFFFF" : "#F1F7FA";
   const logoRatio = logoSize === "s" ? 0.2 : 0.26;
 
   const imageSettings = (size: number) =>
     logoData ? { src: logoData, height: size * logoRatio, width: size * logoRatio, excavate: true } : undefined;
+
+  /** The bottle artwork as a standalone SVG document. */
+  function bottleMarkup() {
+    const svg = bottleRef.current;
+    if (!svg) return null;
+    return `<?xml version="1.0" encoding="UTF-8"?>\n${svg.outerHTML}`;
+  }
 
   function triggerDownload(href: string, extension: string) {
     const a = document.createElement("a");
@@ -78,12 +94,42 @@ export function QrStudio({ url, label, name, logo, primary, accent, fileName, co
   }
 
   async function downloadPng() {
+    if (design === "bottle") {
+      const markup = bottleMarkup();
+      if (!markup) return;
+      const img = new Image();
+      img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(markup)}`;
+      await img.decode();
+      // White background and a margin: a transparent PNG shows the clear bottle
+      // as dark grey in dark-mode chats and many image viewers.
+      const pad = Math.round(BOTTLE_EXPORT_WIDTH * 0.08);
+      const artWidth = BOTTLE_EXPORT_WIDTH - pad * 2;
+      const artHeight = Math.round((artWidth * BOTTLE_HEIGHT) / BOTTLE_WIDTH);
+      const out = document.createElement("canvas");
+      out.width = BOTTLE_EXPORT_WIDTH;
+      out.height = artHeight + pad * 2;
+      const ctx = out.getContext("2d")!;
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, out.width, out.height);
+      ctx.drawImage(img, pad, pad, artWidth, artHeight);
+      triggerDownload(out.toDataURL("image/png"), "png");
+      toast({ tone: "success", title: "PNG downloaded", description: "Bottle design, ready for print and social posts." });
+      return;
+    }
     const qr = canvasHost.current?.querySelector("canvas");
     if (!qr) return;
     // Give the canvas a frame to finish drawing the logo.
     await new Promise((r) => setTimeout(r, 60));
     if (!framed) {
-      triggerDownload(qr.toDataURL("image/png"), "png");
+      // A white margin (the "quiet zone") is part of the code: scanners need it to find the edges.
+      const pad = Math.round(EXPORT_SIZE * 0.1);
+      const out = document.createElement("canvas");
+      out.width = out.height = EXPORT_SIZE + pad * 2;
+      const ctx = out.getContext("2d")!;
+      ctx.fillStyle = background;
+      ctx.fillRect(0, 0, out.width, out.height);
+      ctx.drawImage(qr, pad, pad);
+      triggerDownload(out.toDataURL("image/png"), "png");
     } else {
       const pad = 96;
       const footer = 230;
@@ -109,6 +155,15 @@ export function QrStudio({ url, label, name, logo, primary, accent, fileName, co
   }
 
   function downloadSvg() {
+    if (design === "bottle") {
+      const markup = bottleMarkup();
+      if (!markup) return;
+      const href = URL.createObjectURL(new Blob([markup], { type: "image/svg+xml" }));
+      triggerDownload(href, "svg");
+      setTimeout(() => URL.revokeObjectURL(href), 1000);
+      toast({ tone: "success", title: "SVG downloaded", description: "Vector file, sharp at any size." });
+      return;
+    }
     const svg = svgHost.current?.querySelector("svg");
     if (!svg) return;
     const inner = svg.innerHTML;
@@ -116,7 +171,9 @@ export function QrStudio({ url, label, name, logo, primary, accent, fileName, co
     const [, , w] = view.split(" ").map(Number);
     let markup: string;
     if (!framed) {
-      markup = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="${view}" width="1024" height="1024" shape-rendering="crispEdges">${inner}</svg>`;
+      // Include a quiet zone (white margin) around the code so it scans when placed on any background.
+      const m = w * 0.1;
+      markup = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="${-m} ${-m} ${w + m * 2} ${w + m * 2}" width="1024" height="1024" shape-rendering="crispEdges"><rect x="${-m}" y="${-m}" width="${w + m * 2}" height="${w + m * 2}" fill="${background}"/>${inner}</svg>`;
     } else {
       const pad = w * 0.09;
       const total = w + pad * 2;
@@ -140,6 +197,22 @@ export function QrStudio({ url, label, name, logo, primary, accent, fileName, co
     <div className={cn("grid gap-6", !compact && "lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]")}>
       {/* Preview */}
       <div className="flex flex-col items-center justify-center rounded-xl bg-[radial-gradient(100%_100%_at_50%_0%,#ffffff,#eef0f4)] p-6 ring-1 ring-line/70 sm:p-10">
+        {design === "bottle" ? (
+          <div className="w-full max-w-[250px]">
+            <BottleQr
+              ref={bottleRef}
+              url={url}
+              name={name}
+              label={label}
+              navy={deep}
+              codeColor={fg}
+              sky={accent}
+              centerImage={logoData}
+              centerRatio={logoRatio}
+              idPrefix={`bottle${id.replace(/[^a-zA-Z0-9]/g, "")}`}
+            />
+          </div>
+        ) : (
         <div
           className="w-full max-w-[300px] rounded-[22px] p-6 shadow-[0_24px_60px_-28px_rgba(22,26,43,0.45)] ring-1 ring-black/5 transition-colors duration-300"
           style={{ background }}
@@ -163,6 +236,7 @@ export function QrStudio({ url, label, name, logo, primary, accent, fileName, co
             </div>
           )}
         </div>
+        )}
         <p className="mt-5 inline-flex items-center gap-1.5 text-center text-[12.5px] text-muted">
           <Lock size={13} /> Always opens {label}
         </p>
@@ -184,6 +258,19 @@ export function QrStudio({ url, label, name, logo, primary, accent, fileName, co
       {/* Controls */}
       <div className="space-y-5">
         <div>
+          <p className="mb-2 text-[13.5px] font-medium text-ink">Design</p>
+          <Segmented
+            value={design}
+            onChange={setDesign}
+            options={[
+              { value: "bottle", label: "Bottle" },
+              { value: "card", label: "Card" },
+              { value: "plain", label: "Code only" },
+            ]}
+          />
+        </div>
+
+        <div>
           <p id={`${id}-color`} className="mb-2 text-[13.5px] font-medium text-ink">
             Code color
           </p>
@@ -203,29 +290,26 @@ export function QrStudio({ url, label, name, logo, primary, accent, fileName, co
           </div>
         </div>
 
-        <div>
-          <p className="mb-2 text-[13.5px] font-medium text-ink">Background</p>
-          <Segmented value={bg} onChange={setBg} options={[{ value: "white", label: "White" }, { value: "tint", label: "Soft tint" }]} />
-        </div>
+        {design !== "bottle" && (
+          <div>
+            <p className="mb-2 text-[13.5px] font-medium text-ink">Background</p>
+            <Segmented value={bg} onChange={setBg} options={[{ value: "white", label: "White" }, { value: "tint", label: "Soft tint" }]} />
+          </div>
+        )}
 
         <div className="space-y-3 rounded-lg bg-paper p-4 ring-1 ring-line/70">
           <label className="flex items-center justify-between gap-4">
             <span>
               <span className="block text-[13.5px] font-medium text-ink">Logo in the center</span>
-              <span className="block text-[12.5px] text-muted">{logo?.url ? "Uses extra error correction so it still scans." : "Upload a logo in Business profile first."}</span>
+              <span className="block text-[12.5px] text-muted">
+                {logo?.url ? "Your logo, with extra error correction so it still scans." : "A droplet mark. Upload a logo in Business profile to use it here."}
+              </span>
             </span>
-            <Switch label="Show logo" checked={withLogo && Boolean(logo?.url)} onChange={setWithLogo} />
+            <Switch label="Show logo" checked={withLogo} onChange={setWithLogo} />
           </label>
-          {withLogo && logo?.url && (
+          {withLogo && (
             <Segmented size="sm" value={logoSize} onChange={setLogoSize} options={[{ value: "s", label: "Small logo" }, { value: "m", label: "Larger logo" }]} />
           )}
-          <label className="flex items-center justify-between gap-4 border-t border-line pt-3">
-            <span>
-              <span className="block text-[13.5px] font-medium text-ink">Name and address underneath</span>
-              <span className="block text-[12.5px] text-muted">Helps people know where the code goes.</span>
-            </span>
-            <Switch label="Show name and address" checked={framed} onChange={setFramed} />
-          </label>
         </div>
 
         <div className="grid gap-2 sm:grid-cols-2">

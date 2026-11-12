@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { SignIn } from "@clerk/nextjs";
+import { ClerkFailed, SignIn } from "@clerk/nextjs";
 import { ArrowRight, Lock } from "lucide-react";
 import { Suspense } from "react";
 import { devSignIn } from "@/app/dev/actions";
@@ -33,6 +33,15 @@ export default async function SignInPage() {
         {isClerkConfigured ? (
           <Suspense fallback={<div className="h-[420px] w-full max-w-[420px] animate-pulse rounded-[24px] bg-white/70" />}>
             <SignIn withSignUp={false} forceRedirectUrl="/dashboard" appearance={clerkAppearance(appearance)} />
+            {/* Clerk's script couldn't load (e.g. its domain isn't reachable): say so instead of showing nothing. */}
+            <ClerkFailed>
+              <div className="bp-card w-full max-w-[420px] p-8 text-center" role="alert">
+                <h2 className="bp-display text-[30px]">Sign-in is unavailable</h2>
+                <p className="bp-muted mt-2 text-[15px] leading-relaxed">
+                  The secure sign-in service couldn&apos;t be reached. Check your connection and reload the page in a few minutes.
+                </p>
+              </div>
+            </ClerkFailed>
           </Suspense>
         ) : isDevAuth ? (
           <DevSignIn />
