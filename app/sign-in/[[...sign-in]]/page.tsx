@@ -1,87 +1,152 @@
 /* eslint-disable @next/next/no-img-element */
 import { SignIn } from "@clerk/nextjs";
 import { ArrowRight, Lock } from "lucide-react";
-import Link from "next/link";
 import { Suspense } from "react";
 import { devSignIn } from "@/app/dev/actions";
-import { deepen } from "@/lib/color";
-import { isClerkConfigured, isDevAuth, SITE_HOST, SITE_NAME } from "@/lib/config";
+import { deepen, rgba } from "@/lib/color";
+import { isClerkConfigured, isDevAuth, SITE_NAME } from "@/lib/config";
 import { getPublishedPage } from "@/lib/data/public";
 import { imageSrc } from "@/lib/images";
 import { DEFAULT_APPEARANCE } from "@/lib/site";
+import { businessTheme, themeAttributes } from "@/lib/theme";
+import type { Appearance, ImageRef } from "@/lib/types";
 import { initials } from "@/lib/utils";
 
 export const metadata = { title: "Sign in", robots: { index: false } };
 
-export default function SignInPage() {
+/**
+ * Administrator sign-in, dressed in the public site's own brand: the same
+ * colors, display serif and water imagery as marilicht.social. Clerk's card
+ * is themed only through its supported `appearance` variables and elements.
+ */
+export default async function SignInPage() {
+  const page = await getPublishedPage();
+  const appearance = page?.content.appearance ?? DEFAULT_APPEARANCE;
+  const profile = page?.content.profile;
+  const name = profile?.name || SITE_NAME;
+
   return (
-    <main className="grid min-h-svh bg-paper lg:grid-cols-[1.05fr_1fr]">
-      <BrandPanel />
-      <div className="flex flex-col items-center justify-center px-5 py-12 sm:px-10">
+    <main className="bp min-h-svh lg:grid lg:grid-cols-[1.05fr_1fr]" style={businessTheme(appearance)} {...themeAttributes(appearance)}>
+      <BrandPanel name={name} tagline={profile?.tagline} logo={profile?.logo} cover={profile?.cover} />
+
+      <section className="relative flex flex-col items-center justify-center px-5 pb-16 pt-8 sm:px-10 lg:py-12">
         {isClerkConfigured ? (
-          // Sign-up is hidden here and should be set to "Restricted" in Clerk, so nobody can register.
-          <Suspense fallback={<div className="skeleton h-[380px] w-full max-w-[400px] rounded-xl" />}>
-            <SignIn withSignUp={false} forceRedirectUrl="/dashboard" appearance={{ elements: { rootBox: "w-full max-w-[400px]", cardBox: "shadow-md", footerAction: { display: "none" } } }} />
+          <Suspense fallback={<div className="h-[420px] w-full max-w-[420px] animate-pulse rounded-[24px] bg-white/70" />}>
+            <SignIn withSignUp={false} forceRedirectUrl="/dashboard" appearance={clerkAppearance(appearance)} />
           </Suspense>
         ) : isDevAuth ? (
           <DevSignIn />
         ) : (
           <div className="max-w-sm text-center">
-            <h1 className="text-[20px] font-semibold text-ink">Sign-in isn&apos;t configured</h1>
-            <p className="mt-2 text-[14px] text-muted">Add the Clerk keys to the environment to enable the dashboard.</p>
+            <h1 className="bp-display text-[30px]">Sign-in isn&apos;t configured</h1>
+            <p className="bp-muted mt-2 text-[15px]">Add the Clerk keys to the environment to enable the dashboard.</p>
           </div>
         )}
-        <Link href="/" className="mt-10 text-[13px] text-muted transition hover:text-ink">
-          Back to {SITE_HOST}
-        </Link>
-      </div>
+      </section>
     </main>
   );
 }
 
-/** Wears the site's own published brand colors and logo. */
-async function BrandPanel() {
-  const page = await getPublishedPage();
-  const appearance = page?.content.appearance ?? DEFAULT_APPEARANCE;
-  const logo = page?.content.profile.logo;
-  const name = page?.content.profile.name || SITE_NAME;
-  const deep = deepen(appearance.primary, 13);
+/** The public page's hero, condensed: cover, water light, logo and name. */
+function BrandPanel({ name, tagline, logo, cover }: { name: string; tagline?: string; logo?: ImageRef | null; cover?: ImageRef | null }) {
   return (
-    <aside
-      className="relative hidden overflow-hidden p-12 text-white lg:flex lg:flex-col"
-      style={{ background: `radial-gradient(70% 55% at 85% 0%, ${appearance.accent}66, transparent 70%), linear-gradient(160deg, ${deep}, ${deepen(deep, 17)})` }}
-    >
-      <div className="relative flex items-center gap-3">
-        <span className="grid size-11 place-items-center overflow-hidden rounded-full bg-white text-[14px] font-semibold" style={{ color: deep }}>
-          {logo?.url ? <img src={imageSrc(logo, 44)} alt="" className="size-full object-cover" /> : initials(name)}
+    <aside className="relative isolate overflow-hidden bg-[var(--bp-deep)] text-white">
+      <div className="absolute inset-0 -z-10" aria-hidden="true">
+        {cover?.url ? (
+          <img src={imageSrc(cover, 900)} alt="" className="size-full object-cover" />
+        ) : (
+          <div
+            className="size-full"
+            style={{ background: "radial-gradient(120% 80% at 70% 0%, color-mix(in srgb, var(--bp-accent) 75%, white) 0%, var(--bp-accent) 22%, var(--bp-primary) 62%, var(--bp-abyss) 100%)" }}
+          />
+        )}
+        <div className="bp-caustics" />
+        <div className="bp-caustics b" />
+        <div
+          className="absolute inset-0"
+          style={{ background: "linear-gradient(180deg, color-mix(in srgb, var(--bp-abyss) 30%, transparent) 0%, transparent 30%, color-mix(in srgb, var(--bp-deep) 60%, transparent) 60%, var(--bp-deep) 100%)" }}
+        />
+      </div>
+
+      <div className="flex min-h-[260px] flex-col justify-end px-6 pb-8 pt-10 sm:px-10 lg:min-h-svh lg:px-14 lg:pb-14">
+        <span className="grid size-[72px] place-items-center rounded-full bg-white/20 p-1 ring-1 ring-white/30 backdrop-blur-md lg:size-[92px]">
+          <span className="grid size-full place-items-center overflow-hidden rounded-full bg-white">
+            {logo?.url ? (
+              <img src={imageSrc(logo, 92)} alt={`${name} logo`} className="size-full object-cover" />
+            ) : (
+              <span className="bp-display text-[28px] text-[var(--bp-deep)]">{initials(name)}</span>
+            )}
+          </span>
         </span>
-        <span className="text-[17px] font-semibold">{name}</span>
+        <h1 className="bp-display mt-5 text-[44px] lg:text-[64px]">{name}</h1>
+        {tagline && <p className="mt-2 max-w-[34ch] text-[16px] leading-snug text-white/80 lg:text-[18px]">{tagline}</p>}
+        <span className="bp-chip mt-5 self-start bg-white/12 text-white/90 ring-1 ring-white/15 backdrop-blur-md">
+          <Lock size={13} strokeWidth={2} />
+          Administrator access
+        </span>
       </div>
-      <div className="relative mt-auto max-w-[440px]">
-        <p className="text-[38px] font-semibold leading-[1.08] tracking-[-0.03em]">Manage your page.</p>
-        <p className="mt-4 text-[16px] leading-relaxed text-white/70">
-          Update products, prices, hours and offers. Publish when you&apos;re ready and {SITE_HOST} changes instantly. Your QR code keeps working.
-        </p>
-      </div>
+
+      {/* On phones the hero sits on top; a water-surface edge joins it to the form */}
+      <svg className="absolute inset-x-0 -bottom-px h-6 w-full text-[var(--bp-bg)] lg:hidden" viewBox="0 0 400 24" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 14 C 60 4 120 4 200 12 S 340 24 400 10 L400 24 L0 24 Z" fill="currentColor" />
+      </svg>
     </aside>
   );
 }
 
+/**
+ * Clerk theming through its supported appearance API only. Clerk's own
+ * footer ("Secured by Clerk", and "Development mode" on development
+ * instances) is controlled by the Clerk instance and is left untouched.
+ */
+function clerkAppearance(appearance: Appearance) {
+  const deep = deepen(appearance.primary, 13);
+  const display = "var(--font-tide-display), Georgia, serif";
+  const body = "var(--font-tide-body), system-ui, sans-serif";
+  return {
+    layout: {
+      // The brand panel already shows the logo.
+      logoPlacement: "none" as const,
+      socialButtonsVariant: "blockButton" as const,
+    },
+    variables: {
+      colorPrimary: deep,
+      colorPrimaryForeground: "#FFFFFF",
+      colorForeground: deep,
+      colorMutedForeground: rgba(deep, 0.62),
+      colorBackground: "#FFFFFF",
+      colorInput: "#FFFFFF",
+      colorInputForeground: deep,
+      colorBorder: rgba(deep, 0.22),
+      colorRing: appearance.accent,
+      colorShadow: rgba(deep, 0.35),
+      fontFamily: body,
+      fontFamilyButtons: body,
+      borderRadius: "12px",
+    },
+    elements: {
+      rootBox: { width: "100%", maxWidth: "420px" },
+      cardBox: { width: "100%", borderRadius: "24px", boxShadow: `0 1px 2px ${rgba(deep, 0.06)}, 0 30px 60px -30px ${rgba(deep, 0.4)}` },
+      headerTitle: { fontFamily: display, fontWeight: 500, fontSize: "32px", letterSpacing: "-0.01em", lineHeight: 1.05 },
+      headerSubtitle: { fontSize: "15px" },
+      formButtonPrimary: { borderRadius: "999px", height: "46px", fontSize: "15px", fontWeight: 600, boxShadow: "none" },
+      socialButtonsBlockButton: { borderRadius: "999px", height: "44px", boxShadow: `inset 0 0 0 1px ${rgba(deep, 0.2)}` },
+      formFieldInput: { height: "44px", borderRadius: "12px", backgroundColor: rgba(deep, 0.025), boxShadow: `inset 0 0 0 1px ${rgba(deep, 0.2)}` },
+      // Sign-up isn't offered (withSignUp={false}; Clerk's sign-up mode should be Restricted).
+      footerAction: { display: "none" },
+    },
+  };
+}
+
 function DevSignIn() {
   return (
-    <div className="w-full max-w-[400px]">
-      <span className="grid size-11 place-items-center rounded-full bg-surface text-ink-2 shadow-sm ring-1 ring-line">
-        <Lock size={18} />
-      </span>
-      <h1 className="mt-5 text-[24px] font-semibold tracking-[-0.02em] text-ink">Administrator sign-in</h1>
-      <p className="mt-1.5 text-[14px] leading-relaxed text-muted">
+    <div className="bp-card w-full max-w-[420px] p-8">
+      <h1 className="bp-display text-[32px]">Administrator sign-in</h1>
+      <p className="bp-muted mt-2 text-[14.5px] leading-relaxed">
         Development mode: Clerk isn&apos;t configured, so you can continue without a password. This screen never appears in production.
       </p>
       <form action={devSignIn} className="mt-6">
-        <button
-          type="submit"
-          className="group flex h-12 w-full items-center justify-center gap-2 rounded-md bg-ink text-[15px] font-medium text-white shadow-md transition hover:bg-[#232842]"
-        >
+        <button type="submit" className="bp-btn group w-full">
           Continue as administrator <ArrowRight size={16} className="transition group-hover:translate-x-0.5" />
         </button>
       </form>

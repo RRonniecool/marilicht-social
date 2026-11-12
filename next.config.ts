@@ -12,6 +12,17 @@ const nextConfig: NextConfig = {
     },
   },
   cacheComponents: true,
+  /**
+   * There is one administrator and no public registration. Any sign-up URL
+   * (including Clerk's default /sign-up links) goes to sign-in instead.
+   * Registration itself is blocked by Clerk's "Restricted" sign-up mode.
+   */
+  async redirects() {
+    return [
+      { source: "/sign-up", destination: "/sign-in", permanent: false },
+      { source: "/sign-up/:path*", destination: "/sign-in", permanent: false },
+    ];
+  },
   partialPrefetching: true,
   turbopack: {
     rules: {
