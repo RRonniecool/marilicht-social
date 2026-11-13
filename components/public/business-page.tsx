@@ -128,7 +128,7 @@ export function BusinessPage({ content, pageUrl, preview, className }: Props) {
 
       {/* ------------------------------------------------ The deep end: contact */}
       {hasContact && (
-        <div className="mt-4 @3xl:mt-16" data-section="contact">
+        <div className="mt-4 @3xl:mt-16" data-section="contact" data-bp-end>
           <WaterSurface />
           <section className="bp-deep -mt-px px-5 pb-10 pt-8 @md:px-7 @3xl:px-8" aria-labelledby="contact-heading">
             <div className="mx-auto max-w-[1200px]">
@@ -186,7 +186,7 @@ export function BusinessPage({ content, pageUrl, preview, className }: Props) {
         </div>
       )}
       {!hasContact && (
-        <div className="px-5 pb-10">
+        <div className="px-5 pb-10" data-bp-end>
           <Footer name={name} logo={profile.logo} pageUrl={pageUrl} light />
         </div>
       )}

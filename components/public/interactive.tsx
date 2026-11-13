@@ -115,21 +115,47 @@ export function ShareButton({
 
 /**
  * Mobile order bar. Appears once the hero's order button scrolls out of
- * view, so the page never shows two identical calls to action at once.
+ * view, and steps aside again when the contact section or footer comes into
+ * view: those already have their own WhatsApp and share buttons, and the
+ * bar would otherwise cover the end of the page.
  */
 export function StickyOrderBar({ href, label, pageUrl, title }: { href: string; label: string; pageUrl: string; title: string }) {
-  const [visible, setVisible] = useState(false);
+  const [pastHero, setPastHero] = useState(false);
+  const [atEnd, setAtEnd] = useState(false);
+  const visible = pastHero && !atEnd;
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const root = ref.current?.closest(".bp");
-    const target = root?.querySelector("[data-hero-cta]");
-    if (!target) return;
-    const observer = new IntersectionObserver(([entry]) => setVisible(!entry.isIntersecting && entry.boundingClientRect.top < 0), {
-      threshold: 0,
-    });
-    observer.observe(target);
-    return () => observer.disconnect();
+    if (!root) return;
+    const observers: IntersectionObserver[] = [];
+
+    const hero = root.querySelector("[data-hero-cta]");
+    if (hero) {
+      const o = new IntersectionObserver(([entry]) => setPastHero(!entry.isIntersecting && entry.boundingClientRect.top < 0), { threshold: 0 });
+      o.observe(hero);
+      observers.push(o);
+    }
+
+    const ends = root.querySelectorAll("[data-bp-end]");
+    if (ends.length) {
+      const inView = new Set<Element>();
+      const o = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) inView.add(entry.target);
+            else inView.delete(entry.target);
+          }
+          setAtEnd(inView.size > 0);
+        },
+        // Start hiding a little before the section reaches the bar's height.
+        { threshold: 0, rootMargin: "0px 0px -72px 0px" },
+      );
+      ends.forEach((el) => o.observe(el));
+      observers.push(o);
+    }
+
+    return () => observers.forEach((o) => o.disconnect());
   }, []);
 
   return (
