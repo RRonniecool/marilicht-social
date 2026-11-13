@@ -33,6 +33,7 @@ function useFitScale(box: { width: number; height: number }, padding = 32) {
  * in-memory draft, so every keystroke shows exactly what customers will see.
  */
 const SECTION_FOR_PATH: Record<string, string> = {
+  "/dashboard/social": "socials",
   "/dashboard/website": "website",
   "/dashboard/products": "products",
   "/dashboard/contact": "contact",

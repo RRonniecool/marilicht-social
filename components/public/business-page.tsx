@@ -20,6 +20,7 @@ import { businessTheme, themeAttributes } from "@/lib/theme";
 import type { ImageRef, PageContent, Product, Promotion } from "@/lib/types";
 import { cn, displayUrl, initials, normalizeUrl, whatsappLink } from "@/lib/utils";
 import { HoursList, OpenStatusChip, ShareButton, StickyOrderBar } from "./interactive";
+import { SocialCards } from "./social-cards";
 
 type Props = {
   content: PageContent;
@@ -74,6 +75,8 @@ export function BusinessPage({ content, pageUrl, preview, className }: Props) {
               </p>
             </section>
           )}
+
+          <SocialCards socials={socials} />
 
           {promos.length > 0 && (
             <section aria-label="Offers" className="space-y-3" data-section="promotions">

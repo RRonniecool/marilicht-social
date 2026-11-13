@@ -178,22 +178,24 @@ function SiteCard() {
 function UserCard() {
   const { viewer } = useEditor();
   return (
-    <div className="flex items-center gap-3 border-t border-line/70 p-4">
-      <span className="grid size-8 shrink-0 place-items-center overflow-hidden rounded-full bg-signal-soft text-[12px] font-semibold text-signal-ink">
-        {viewer.imageUrl ? <img src={viewer.imageUrl} alt="" className="size-full object-cover" /> : initials(viewer.name || viewer.email)}
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block truncate text-[13px] font-medium text-ink">{viewer.name}</span>
-        <span className="block truncate text-[12px] text-muted">{viewer.email}</span>
-      </span>
-      <SignOut />
+    <div className="space-y-3 border-t border-line/70 p-4">
+      <div className="flex items-center gap-3">
+        <span className="grid size-8 shrink-0 place-items-center overflow-hidden rounded-full bg-signal-soft text-[12px] font-semibold text-signal-ink">
+          {viewer.imageUrl ? <img src={viewer.imageUrl} alt="" className="size-full object-cover" /> : initials(viewer.name || viewer.email)}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-[13px] font-medium text-ink">{viewer.name}</span>
+          <span className="block truncate text-[12px] text-muted">{viewer.email}</span>
+        </span>
+      </div>
+      <SignOut className="w-full" />
     </div>
   );
 }
 
-function SignOut() {
+function SignOut({ className }: { className?: string }) {
   const { viewer } = useEditor();
-  return <SignOutButton source={viewer.source} compact />;
+  return <SignOutButton source={viewer.source} variant="outline" className={className} />;
 }
 
 /* ================================================================== */
@@ -353,7 +355,7 @@ function MobileHeader({ current }: { current: NavItem }) {
           <p className="truncate text-[14.5px] font-semibold leading-tight text-ink">{current.title}</p>
           <SaveIndicator compact />
         </div>
-        <SignOut />
+        <SignOut className="h-8 px-2.5 text-[13px]" />
       </div>
       <div ref={tabs} className="no-scrollbar flex gap-1 overflow-x-auto px-3 pb-2.5">
         {NAV.map((item) => {
