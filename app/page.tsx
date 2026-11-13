@@ -2,12 +2,11 @@ import type { Metadata } from "next";
 import { BusinessPage } from "@/components/public/business-page";
 import { deepen } from "@/lib/color";
 import { SITE_NAME, SITE_URL } from "@/lib/config";
-import { getPublishedPage } from "@/lib/data/public";
+import { getPublicPage } from "@/lib/data/public";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const page = await getPublishedPage();
-  if (!page) return { title: SITE_NAME };
-  const { profile } = page.content;
+  const { content } = await getPublicPage();
+  const { profile } = content;
   const description = profile.tagline || profile.description.slice(0, 160);
   const image = profile.cover?.url ?? profile.logo?.url;
   return {
@@ -20,28 +19,18 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * The public site. The published page is cached and tagged; publishing from
- * the dashboard expires the tag, so visitors see changes immediately.
+ * The public site. Shows the published page; until the owner publishes for
+ * the first time it shows the sample Marilicht page instead of an empty one.
+ * The published page is cached and tagged; publishing from the dashboard
+ * expires the tag, so visitors see the real content immediately.
  */
 export default async function HomePage() {
-  const page = await getPublishedPage();
-
-  if (!page) {
-    return (
-      <main className="grid min-h-svh place-items-center bg-paper px-6 text-center">
-        <div>
-          <h1 className="text-[28px] font-semibold tracking-[-0.02em] text-ink">{SITE_NAME}</h1>
-          <p className="mt-2 text-[15px] text-muted">Our page is coming soon.</p>
-        </div>
-      </main>
-    );
-  }
-
+  const { content } = await getPublicPage();
   return (
     <>
       {/* React hoists this into <head>: tints the mobile browser chrome to the brand */}
-      <meta name="theme-color" content={deepen(page.content.appearance.primary, 13)} />
-      <BusinessPage content={page.content} pageUrl={SITE_URL} />
+      <meta name="theme-color" content={deepen(content.appearance.primary, 13)} />
+      <BusinessPage content={content} pageUrl={SITE_URL} />
     </>
   );
 }

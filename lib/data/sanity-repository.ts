@@ -1,8 +1,13 @@
 import "server-only";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { headers } from "next/headers";
 import { createClient, type SanityClient } from "next-sanity";
+import { SITE_URL } from "@/lib/config";
 import type { EditorState, ImageRef, PageContent } from "@/lib/types";
 import { normalizeContent } from "./normalize";
 import type { Repository } from "./repository";
+import { seedContent } from "./seed";
 
 /**
  * Sanity model: one `sitePage` document.
@@ -48,10 +53,29 @@ const CONTENT = `
 type Doc = Record<string, unknown>;
 type Fetched = Doc & { _id: string; _updatedAt: string };
 
-/** Sanity image object from our ImageRef. Non-Sanity URLs are dropped. */
-function toSanityImage(image: ImageRef | null | undefined) {
-  if (!image?.assetId) return undefined;
-  return { _type: "image", asset: { _type: "reference", _ref: image.assetId }, alt: image.alt ?? "" };
+type ResolveImage = (image: ImageRef | null | undefined) => Promise<Doc | undefined>;
+
+/** Only the bundled sample artwork may be imported this way (no arbitrary URLs). */
+const SAMPLE_IMAGE = /^\/demo\/marilicht\/[a-z0-9.-]+\.svg$/;
+
+/** Bytes of a bundled sample image: from disk when available, else from this deployment over HTTP. */
+async function loadSampleImage(url: string): Promise<Buffer> {
+  try {
+    return await readFile(path.join(process.cwd(), "public", url));
+  } catch {
+    // Serverless hosts don't always ship /public alongside functions.
+    let origin = SITE_URL;
+    try {
+      const h = await headers();
+      const host = h.get("x-forwarded-host") ?? h.get("host");
+      if (host) origin = `${h.get("x-forwarded-proto") ?? "https"}://${host}`;
+    } catch {
+      /* not in a request: fall back to the public site */
+    }
+    const response = await fetch(new URL(url, origin));
+    if (!response.ok) throw new Error(`Couldn't load sample image ${url} (${response.status})`);
+    return Buffer.from(await response.arrayBuffer());
+  }
 }
 
 /** Drops our client-side `id`; Sanity uses `_key` for array items. */
@@ -61,16 +85,17 @@ function withoutId<T extends { id: string }>(item: T): Omit<T, "id"> {
   return copy as Omit<T, "id">;
 }
 
-function toSanityContent(content: PageContent): Doc {
-  const keyed = <T extends { id: string }>(items: T[], map: (item: T) => Doc) => items.map((item) => ({ _key: item.id, ...map(item) }));
+async function toSanityContent(content: PageContent, toImage: ResolveImage): Promise<Doc> {
+  const keyed = <T extends { id: string }>(items: T[], map: (item: T) => Promise<Doc> | Doc) =>
+    Promise.all(items.map(async (item) => ({ _key: item.id, ...(await map(item)) })));
   return {
-    profile: { ...content.profile, logo: toSanityImage(content.profile.logo), cover: toSanityImage(content.profile.cover) },
-    website: { ...content.website, previewImage: toSanityImage(content.website.previewImage) },
-    socials: keyed(content.socials, ({ platform, url, label }) => ({ _type: "socialLink", platform, url, label })),
-    products: keyed(content.products, (p) => ({ _type: "product", ...withoutId(p), image: toSanityImage(p.image) })),
+    profile: { ...content.profile, logo: await toImage(content.profile.logo), cover: await toImage(content.profile.cover) },
+    website: { ...content.website, previewImage: await toImage(content.website.previewImage) },
+    socials: await keyed(content.socials, ({ platform, url, label }) => ({ _type: "socialLink", platform, url, label })),
+    products: await keyed(content.products, async (p) => ({ _type: "product", ...withoutId(p), image: await toImage(p.image) })),
     contact: { ...content.contact, hours: content.contact.hours.map((h) => ({ _key: `d${h.day}`, _type: "openingHours", ...h })) },
-    promotions: keyed(content.promotions, (p) => ({ _type: "promotion", ...withoutId(p), image: toSanityImage(p.image) })),
-    links: keyed(content.links, (l) => ({ _type: "customLink", ...withoutId(l) })),
+    promotions: await keyed(content.promotions, async (p) => ({ _type: "promotion", ...withoutId(p), image: await toImage(p.image) })),
+    links: await keyed(content.links, (l) => ({ _type: "customLink", ...withoutId(l) })),
     appearance: content.appearance,
   };
 }
@@ -79,6 +104,31 @@ const strip = <T,>(doc: T): T => JSON.parse(JSON.stringify(doc));
 
 export function createSanityRepository(): Repository {
   const sanity = client();
+
+  // Sample artwork (/demo/marilicht/*.svg) becomes a real Sanity asset the
+  // first time the owner saves a draft built from the sample content, so the
+  // pictures survive. Sanity de-duplicates identical files, and this cache
+  // avoids re-uploading on every autosave.
+  const sampleAssets = new Map<string, Promise<string>>();
+  function sampleAssetId(url: string) {
+    let pending = sampleAssets.get(url);
+    if (!pending) {
+      pending = loadSampleImage(url)
+        .then((bytes) => sanity.assets.upload("image", bytes, { filename: path.basename(url), contentType: "image/svg+xml" }))
+        .then((asset) => asset._id);
+      pending.catch(() => sampleAssets.delete(url));
+      sampleAssets.set(url, pending);
+    }
+    return pending;
+  }
+
+  /** Sanity image object from our ImageRef. Unknown non-Sanity URLs are dropped. */
+  const toImage: ResolveImage = async (image) => {
+    if (!image?.url && !image?.assetId) return undefined;
+    const ref = image.assetId ?? (SAMPLE_IMAGE.test(image.url) ? await sampleAssetId(image.url) : undefined);
+    if (!ref) return undefined;
+    return { _type: "image", asset: { _type: "reference", _ref: ref }, alt: image.alt ?? "" };
+  };
 
   return {
     kind: "sanity",
@@ -94,7 +144,8 @@ export function createSanityRepository(): Repository {
       const draft = docs.find((d) => d._id === DRAFT_ID);
       const published = pub ? normalizeContent(pub) : null;
       return {
-        draft: draft ? normalizeContent(draft) : (published ?? normalizeContent(null)),
+        // Nothing saved yet: start from the sample page so the owner edits, rather than builds, it.
+        draft: draft ? normalizeContent(draft) : (published ?? normalizeContent(seedContent)),
         published,
         hasUnpublishedChanges: Boolean(draft) || !published,
         draftUpdatedAt: draft?._updatedAt,
@@ -103,7 +154,7 @@ export function createSanityRepository(): Repository {
     },
 
     async saveDraft(content) {
-      const doc = await sanity.createOrReplace(strip({ _id: DRAFT_ID, _type: "sitePage", ...toSanityContent(content) }));
+      const doc = await sanity.createOrReplace(strip({ _id: DRAFT_ID, _type: "sitePage", ...(await toSanityContent(content, toImage)) }));
       return { updatedAt: doc._updatedAt };
     },
 

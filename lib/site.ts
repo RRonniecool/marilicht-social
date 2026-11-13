@@ -4,7 +4,7 @@ import type { Appearance, PageContent } from "@/lib/types";
 /** Section wording on the public page. */
 export const SITE_COPY = {
   productsHeading: "Our range",
-  productsIntro: "Bottled at source, delivered to your door.",
+  productsIntro: "Bottles, packs and refills for home, work and events.",
   sizeLabel: "Size",
   orderVerb: "Order",
   contactHeading: "Find us",

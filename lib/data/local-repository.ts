@@ -30,7 +30,9 @@ function exclusive<T>(fn: () => Promise<T>): Promise<T> {
 
 async function load(): Promise<Store> {
   if (!existsSync(STORE_FILE)) {
-    const fresh: Store = { draft: null, published: seedContent, publishedAt: new Date().toISOString() };
+    // Like Sanity: nothing is published until the owner publishes. The public
+    // page shows the sample meanwhile, and the dashboard starts from it.
+    const fresh: Store = { draft: null, published: null };
     await save(fresh);
     return fresh;
   }
@@ -57,7 +59,7 @@ export function createLocalRepository(): Repository {
       const store = await load();
       const published = store.published ? normalizeContent(store.published) : null;
       return {
-        draft: store.draft ? normalizeContent(store.draft) : (published ?? normalizeContent(null)),
+        draft: store.draft ? normalizeContent(store.draft) : (published ?? normalizeContent(seedContent)),
         published,
         hasUnpublishedChanges: Boolean(store.draft) || !published,
         draftUpdatedAt: store.draftUpdatedAt,
@@ -78,7 +80,7 @@ export function createLocalRepository(): Repository {
       return exclusive(async () => {
         const store = await load();
         const publishedAt = new Date().toISOString();
-        await save({ draft: null, published: store.draft ?? store.published ?? normalizeContent(null), publishedAt });
+        await save({ draft: null, published: store.draft ?? store.published ?? normalizeContent(seedContent), publishedAt });
         return { publishedAt };
       });
     },

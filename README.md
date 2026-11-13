@@ -16,7 +16,11 @@ npm install
 npm run dev
 ```
 
-With no environment variables the app runs in **local mode**: content is saved to `.data/site.json` (seeded with demo content on first run), uploads go to `.data/uploads/`, and `/sign-in` shows a "Continue as administrator" button instead of Clerk. Local mode is disabled whenever `NODE_ENV=production`, so it never runs on Vercel.
+With no environment variables the app runs in **local mode**: content is saved to `.data/site.json`, uploads go to `.data/uploads/`, and `/sign-in` shows a "Continue as administrator" button instead of Clerk. Local mode is disabled whenever `NODE_ENV=production`, so it never runs on Vercel.
+
+## Sample content
+
+Until the first publish, the homepage shows a complete sample Marilicht page (`lib/data/seed.ts`) instead of an empty one, and the dashboard starts from the same content as its draft. The sample uses obvious placeholders (`+234 800 000 0000`, `hello@example.com`, "123 Sample Street"; social icons link to each platform's home page) and makes no offers or claims. Nothing is written to Sanity until you save or publish from the dashboard; when you first save, the sample images are uploaded to Sanity so they survive. Once a page is published, it always takes priority and the sample is never used again.
 
 ## Set up the administrator account (Clerk)
 

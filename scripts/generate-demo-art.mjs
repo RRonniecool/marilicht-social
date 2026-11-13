@@ -179,26 +179,29 @@ function dispenser({ id, size }) {
 
 const files = {
   "bottle-50cl.svg": classicBottle({ id: "b50", size: "50CL", neckW: 46, bodyW: 132, neckTop: 132, shoulderStart: 170, shoulderEnd: 250, bottom: 548, waist: 7, waistTop: 300, waistBottom: 380, labelTop: 392, labelH: 112, waterLine: 214 }),
-  "bottle-75cl-sport.svg": classicBottle({ id: "b75", size: "75CL", neckW: 50, bodyW: 146, neckTop: 150, shoulderStart: 176, shoulderEnd: 246, bottom: 548, labelTop: 330, labelH: 136, waterLine: 222, sport: true, capH: 30 }),
+  "bottle-75cl.svg": classicBottle({ id: "b75", size: "75CL", neckW: 48, bodyW: 150, neckTop: 120, shoulderStart: 152, shoulderEnd: 250, bottom: 548, waist: 8, waistTop: 268, waistBottom: 330, labelTop: 350, labelH: 140, waterLine: 205 }),
   "bottle-1-5l.svg": classicBottle({ id: "b15", size: "1.5L", neckW: 48, bodyW: 176, neckTop: 96, shoulderStart: 130, shoulderEnd: 236, bottom: 548, waist: 10, waistTop: 270, waistBottom: 360, labelTop: 372, labelH: 128, waterLine: 196 }),
   "jug-5l.svg": jug({ id: "j5", size: "5L" }),
   "dispenser-18-9l.svg": dispenser({ id: "d19", size: "18.9L" }),
 };
 
-// Logo: navy disc with a white droplet and an aqua wave.
+// Logo: the Marilicht label badge (navy oval, gold rim, crown wave, droplet, script name) on white.
 files["logo.svg"] = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
   <defs>
-    <radialGradient id="g" cx="0.32" cy="0.25" r="0.9">
-      <stop offset="0" stop-color="#1D4E80"/>
-      <stop offset="0.6" stop-color="${NAVY}"/>
-      <stop offset="1" stop-color="${ABYSS}"/>
-    </radialGradient>
-    <linearGradient id="w" x1="0" x2="1"><stop offset="0" stop-color="#7FE0F4"/><stop offset="1" stop-color="${AQUA}"/></linearGradient>
+    <linearGradient id="navy" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#1F4C9A"/><stop offset="1" stop-color="${NAVY}"/></linearGradient>
+    <linearGradient id="gold" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#F3DE97"/><stop offset="0.5" stop-color="#D7B24E"/><stop offset="1" stop-color="#F3DE97"/></linearGradient>
+    <clipPath id="oval"><ellipse cx="128" cy="128" rx="108" ry="72"/></clipPath>
   </defs>
-  <rect width="256" height="256" rx="128" fill="url(#g)"/>
-  <path d="M128 46 C 152 80 172 106 172 136 A 44 44 0 0 1 84 136 C 84 106 104 80 128 46 Z" fill="#fff"/>
-  <path d="M86 140 C 100 126 114 150 130 138 C 144 128 156 132 170 140 A 42 42 0 0 1 86 140 Z" fill="url(#w)"/>
-  <path d="M112 92 C 104 104 100 114 100 124" stroke="${AQUA}" stroke-opacity="0.45" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <rect width="256" height="256" fill="#fff"/>
+  <ellipse cx="128" cy="128" rx="116" ry="80" fill="url(#gold)"/>
+  <ellipse cx="128" cy="128" rx="108" ry="72" fill="url(#navy)"/>
+  <g clip-path="url(#oval)">
+    <path d="M 20 100 L 46 88 L 66 100 L 88 82 L 108 96 L 128 74 L 148 96 L 168 82 L 190 100 L 210 88 L 236 100 L 236 50 L 20 50 Z" fill="#A6E3F2" opacity="0.92"/>
+  </g>
+  <path d="M128 70 C 135 80 140 87 140 95 A 12 12 0 0 1 116 95 C 116 87 121 80 128 70 Z" fill="#fff"/>
+  <path d="M117 96 C 121 92 125 98 129 95 C 132 93 136 94 139 96 A 11 11 0 0 1 117 96 Z" fill="${AQUA}"/>
+  <text x="128" y="146" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-weight="700" font-size="40" fill="#fff" stroke="#A6E3F2" stroke-width="1.2" paint-order="stroke">Marilicht</text>
+  <text x="128" y="166" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9" letter-spacing="2" fill="#A6E3F2">PREMIUM TABLE WATER</text>
 </svg>`;
 
 // Cover: light falling through water.

@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import { devSignIn } from "@/app/dev/actions";
 import { deepen, rgba } from "@/lib/color";
 import { isClerkConfigured, isDevAuth, SITE_NAME } from "@/lib/config";
-import { getPublishedPage } from "@/lib/data/public";
+import { getPublicPage } from "@/lib/data/public";
 import { imageSrc } from "@/lib/images";
 import { DEFAULT_APPEARANCE } from "@/lib/site";
 import { businessTheme, themeAttributes } from "@/lib/theme";
@@ -20,9 +20,10 @@ export const metadata = { title: "Sign in", robots: { index: false } };
  * is themed only through its supported `appearance` variables and elements.
  */
 export default async function SignInPage() {
-  const page = await getPublishedPage();
-  const appearance = page?.content.appearance ?? DEFAULT_APPEARANCE;
-  const profile = page?.content.profile;
+  // Same brand as the public page (published content, or the sample until then).
+  const page = await getPublicPage();
+  const appearance = page.content.appearance ?? DEFAULT_APPEARANCE;
+  const profile = page.content.profile;
   const name = profile?.name || SITE_NAME;
 
   return (

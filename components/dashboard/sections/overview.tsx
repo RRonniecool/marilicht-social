@@ -116,9 +116,11 @@ export function OverviewSection() {
             <Sparkles size={18} />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-[14.5px] font-semibold text-ink">{published ? "You have unpublished changes" : "Your page isn't live yet"}</p>
+            <p className="text-[14.5px] font-semibold text-ink">{published ? "You have unpublished changes" : "Visitors are seeing sample content"}</p>
             <p className="text-[13.5px] text-ink-2">
-              {published ? "Customers still see the previous version. Publish when you're ready." : "Publish to make it visible at your address."}
+              {published
+                ? "Customers still see the previous version. Publish when you're ready."
+                : "Your page shows sample Marilicht content until you publish. Replace the placeholder phone, email, address and links with your own, then publish."}
             </p>
           </div>
           <div className="hidden lg:block">

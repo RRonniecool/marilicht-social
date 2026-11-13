@@ -7,6 +7,7 @@ import {
   Check,
   CloudOff,
   ExternalLink,
+  Info,
   Eye,
   Loader2,
   RotateCcw,
@@ -50,6 +51,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 <h1 className="text-[26px] font-semibold tracking-[-0.025em] text-ink">{current.title}</h1>
                 <p className="mt-1 text-[14.5px] text-muted">{current.description}</p>
               </div>
+              <SampleNotice hidden={current.href === "/dashboard"} />
               {/* CSS (not JS) entrance, so server-rendered content is never hidden before hydration */}
               <div key={pathname} className="animate-fade-in">
                 {children}
@@ -69,6 +71,21 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       <MobileActionBar onPreview={() => setPreviewOpen(true)} />
       <PreviewSheet open={previewOpen} onClose={() => setPreviewOpen(false)} />
     </div>
+  );
+}
+
+/** Until the first publish, visitors see the sample page; say so on every section. */
+function SampleNotice({ hidden }: { hidden?: boolean }) {
+  const { published } = useEditor();
+  if (published || hidden) return null;
+  return (
+    <p className="mb-5 flex items-start gap-2.5 rounded-lg bg-signal-soft px-4 py-3 text-[13.5px] leading-relaxed text-ink-2 ring-1 ring-signal/15">
+      <Info size={16} className="mt-0.5 shrink-0 text-signal" />
+      <span>
+        <strong className="font-semibold text-ink">This is sample content.</strong> Visitors see it until you publish. Replace the placeholder details
+        (phone, email, address, links and images) with your own, then press Publish.
+      </span>
+    </p>
   );
 }
 
